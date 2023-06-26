@@ -1,0 +1,33 @@
+version: '3.8'
+networks:
+  network1:
+    name: redisn
+    external: true
+
+services:
+  cache:
+    image: redis:latest
+    container_name: cache
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes: 
+      - ./cache:/data
+    
+
+  
+  redismon:
+    image: redislabs/redisinsight
+    container_name: redis_ui
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./redisui:/db
+
+  asynqmon:
+    image: hibiken/asynqmon
+    container_name: asynqmon
+    ports:
+      - '8080:8080'
+    environment:
+      - REDIS_ADDR=cache:6379
